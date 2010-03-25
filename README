@@ -5,6 +5,12 @@ Needs 2 GEMs to work:
 sudo gem install ruby-fsevent
 sudo gem install ruby-growl
 
-Change the variables at the top to do the right thing
+Usage: ci-tool.rb [options]
+    -d, --directory DIR              The directory that you wish to watch
+	-c, --command COMMAND            The command to run
+	-f, --failure FAILURE            The failure message
+	-s, --success SUCCESS            The success message
+	-h, --help                       Display this message
+
 
 You may need to stop and start growl a few times so it gets it right
