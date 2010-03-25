@@ -6,7 +6,7 @@ sudo gem install ruby-fsevent
 sudo gem install ruby-growl
 
 Usage: ci-tool.rb [options]
-    -d, --directory DIR              The directory that you wish to watch
+	-d, --directory DIR              The directory that you wish to watch
 	-c, --command COMMAND            The command to run
 	-f, --failure FAILURE            The failure message
 	-s, --success SUCCESS            The success message
