@@ -2,27 +2,45 @@ require 'rubygems'
 require 'fsevent'
 require 'ruby-growl'
 
+directories = %W(DIRECTORIES TO WATCH)
+command = "COMMAND_TO_RUN"
+failure = "FAILURE MESSAGE"
+success = "SUCCESS MESSAGE"
 
-class RunTests < FSEvent
-	def initialize
-		@@growler = Growl.new "localhost", "ci-tool", ["Test Failed", "Test Success"], nil, "growler"
+class Runner < FSEvent
+	def initialize(command, success, failure)
+		@@growler = Growl.new "localhost", "ci-tool", [failure, success]
+
+		@command = command
+		@success = success
+		@failure = failure
 	end
 	
 	def growler
 		@@growler
 	end
 
+	def command
+		@command
+	end
+
+	def success
+		@success
+	end
+
+	def failure
+		@failure
+	end
+
 	def on_change(directories)
 		puts "Detected change in: #{directories.inspect}"
-		system "cd /Users/jboyens/Workspace/commerce.git/LocalDirectory && " +
-		       "JAVA_OPTS='-d32 -client -XstartOnFirstThread -Xverify:none " +
-			   "-XX:-UseParallelOldGC -XX:+AggressiveOpts -XX:+UseConcMarkSweepGC " +
-			   "-XX:+CMSPermGenSweepingEnabled -XX:+CMSClassUnloadingEnabled' " +
-			   "grails test-app unit:spock CouponService"
+		system command
 		if $?.exitstatus != 0
-			growler.notify "Test Failed", "Test Failed", "Some or all of your shit is broke", 0, true
+			# This is notify (type, header, body, priority, sticky)
+			# sticky seems broken
+			growler.notify "Command Failed", "Command Failed", failure, 0, true
 		else
-			growler.notify "Test Success", "Test Success", "Congratulations, your shit ain't broke", 0, false
+			growler.notify "Command Succeeded", "Command Succeeded", success, 0, false
 		end
 	end
 
@@ -32,9 +50,7 @@ class RunTests < FSEvent
 	end
 end
 
-basedir = "/Users/jboyens/Workspace/commerce.git/LocalDirectory"
-
-runner = RunTests.new
+runner = Runner.new(command, success, failure)
 runner.latency = 0.2
-runner.watch_directories %W(#{basedir}/grails-app #{basedir}/src #{basedir}/test)
+runner.watch_directories directories
 runner.start

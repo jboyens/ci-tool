@@ -1,5 +1,10 @@
+Simple application that watches a directory (or many) and runs a command when it gets a (Mac OS X only) FSEvent
+
 Needs 2 GEMs to work:
 
 sudo gem install ruby-fsevent
 sudo gem install ruby-growl
 
+Change the variables at the top to do the right thing
+
+You may need to stop and start growl a few times so it gets it right
