@@ -1,0 +1,5 @@
+Needs 2 GEMs to work:
+
+sudo gem install ruby-fsevent
+sudo gem install ruby-growl
+
