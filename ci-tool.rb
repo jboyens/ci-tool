@@ -9,7 +9,7 @@ success = "SUCCESS MESSAGE"
 
 class Runner < FSEvent
 	def initialize(command, success, failure)
-		@@growler = Growl.new "localhost", "ci-tool", [failure, success]
+		@@growler = Growl.new "localhost", "ci-tool", ["Command Failed", "Command Succeeded"]
 
 		@command = command
 		@success = success
