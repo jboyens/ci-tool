@@ -1,11 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'ostruct'
+require 'rdoc/usage'
+require 'pp'
+require 'date'
+
 require 'rubygems'
 require 'fsevent'
 require 'ruby-growl'
 
-directories = %W(DIRECTORIES TO WATCH)
-command = "COMMAND_TO_RUN"
-failure = "FAILURE MESSAGE"
-success = "SUCCESS MESSAGE"
+@failure = "Command failed"
+@success = "Command succeeded"
+@command = ""
+@directories = []
+
+opts = OptionParser.new
+opts.on('-d', '--directory DIR', 'The directory that you wish to watch') do |opt|
+	  @directories << opt
+end
+
+opts.on('-c', '--command COMMAND', 'The command to run') do |opt|
+	  @command = opt
+end
+
+opts.on('-f', '--failure FAILURE', 'The failure message') do |opt|
+	  @failure = opt
+end
+
+opts.on('-s', '--success SUCCESS', 'The success message') do |opt|
+	  @success = opt
+end
+
+opts.on_tail('-h', '--help', 'Display this message') do
+	puts opts
+	exit
+end
+
+opts.banner = "Usage: ci-tool.rb [options]"
+opts.parse!(ARGV)
+
+if (@directories.empty? || @command.empty?) then
+	puts opts; exit
+end
 
 class Runner < FSEvent
 	def initialize(command, success, failure)
@@ -50,7 +87,7 @@ class Runner < FSEvent
 	end
 end
 
-runner = Runner.new(command, success, failure)
+runner = Runner.new(@command, @success, @failure)
 runner.latency = 0.2
-runner.watch_directories directories
+runner.watch_directories @directories
 runner.start
